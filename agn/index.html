@@ -86,7 +86,7 @@
         </div>
         <div class="form-group">
             <label for="content">预览</label>
-           <div class="preview row">
+           <div class="preview row" >
               <div class="col-md-6 col-xs-6 col-sm-6">
                   <p class="text-overflow h4">标题：{{title}}</p>
                   <p class="text-overflow h5">作者：{{author}}</p>
@@ -94,7 +94,7 @@
                       {{score.toFixed(1)}}/10
                   </div>
               </div>
-               <div class="col-md-6 col-xs-6 col-sm-6 bgg">
+               <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:`rgba(78, 146, 7,${bgc})`}">
                    <p class="h2">{{summary}}</p>
                    <p class="text-overflow">{{content}}</p>
                    <p>评论员：{{comment}}  {{moment().format('YYYY年MM月DD日')}}</p>
@@ -113,18 +113,21 @@
                 title:'',
                 summary:'尚可',
                 content:'',
-                comment:'yang',
+                comment:localStorage.getItem('comment')||'yang',
                 article:'',
-                author:''
+                author:'',
+                bgc:""
             }
         },
         watch:{
+            comment(nv){
+              localStorage.setItem("comment",nv)
+            },
             score(nv){
                 let val= nv/10
-                if(val<0.5){
-                    val*=0.3
-                    val+=0.2
-                }
+                    val*=0.5
+                    val+=0.5
+                this.bgc = val
                 document.getElementById("color").innerText = `.score {background-color:rgba(78, 146, 7,${val});}.score:after {border-bottom-color:rgba(78, 146, 7,${val}) ;}` +
                     `.score:before {border-top-color:rgba(78, 146, 7,${val}) ;}`
             }
