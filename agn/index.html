@@ -103,6 +103,7 @@
         </div>
     </div>
 </div>
+<style id="color"></style>
 <script>
     var app = new Vue({
         el:'#app',
@@ -115,6 +116,17 @@
                 comment:'yang',
                 article:'',
                 author:''
+            }
+        },
+        watch:{
+            score(nv){
+                let val= nv/10
+                if(val<0.5){
+                    val*=0.3
+                    val+=0.2
+                }
+                document.getElementById("color").innerText = `.score {background-color:rgba(78, 146, 7,${val});}.score:after {border-bottom-color:rgba(78, 146, 7,${val}) ;}` +
+                    `.score:before {border-top-color:rgba(78, 146, 7,${val}) ;}`
             }
         },
         methods:{
