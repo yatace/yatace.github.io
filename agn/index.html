@@ -17,34 +17,14 @@
     <style>
     .score {
         position: relative;
-        width: 100px;
-        height: 60px;
-        background-color: #92d050;
-        margin: 70px 40px 20px;
+        width: 150px;
+        height: 150px;
+        margin: 20px 0;
+        background:url('./score.png') top center/cover;
         font-size: 32px;
         color:#fff;
-        line-height: 60px;
+        line-height: 150px;
         text-align: center;
-    }
-    .score:after {
-        content: "";
-        position: absolute;
-        display: block;
-        top: -80px;
-        width: 0;
-        height: 0;
-        border: 50px solid transparent;
-        border-bottom: 30px solid #92d050;
-    }
-    .score:before {
-        content: "";
-        position: absolute;
-        display: block;
-        bottom: -80px;
-        width: 0;
-        height: 0;
-        border: 50px solid transparent;
-        border-top: 30px solid #92d050;
     }
     .preview{
         padding: 40px;
@@ -104,7 +84,7 @@
                       <p class="text-overflow h4">标题：{{title}}</p>
                       <p class="text-overflow h5">作者：{{author}}</p>
                       <a class="acid" :href="`http://www.acfun.cn/a/${acid}`" :title="title">{{acid}}</a>
-                      <div class="score">
+                      <div class="score" :style="{'background-color':`rgba(78, 146, 7,${bgc})`}">
                           {{score.toFixed(1)}}
                       </div>
                   </div>
@@ -117,7 +97,6 @@
          </div>
      </div>
  </div>
- <style id="color"></style>
  <script>
     var app = new Vue({
         el:'#app',
@@ -131,7 +110,7 @@
                 article:'',
                 author:'',
                 acid:'',
-                bgc:""
+                bgc:"1"
             }
         },
         watch:{
@@ -143,8 +122,6 @@
             val *= 0.6
             val += 0.4
             this.bgc = val
-            document.getElementById("color").innerText = `.score {background-color:rgba(78, 146, 7,${val});}.score:after {border-bottom-color:rgba(78, 146, 7,${val}) ;}` +
-            `.score:before {border-top-color:rgba(78, 146, 7,${val}) ;}`
         }
     },
     methods:{
