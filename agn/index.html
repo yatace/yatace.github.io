@@ -3,108 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <title>Agn生成器</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
     <script crossorigin="anonymous" integrity="sha384-c8inZyD0O4L/ErSuX3RVWgqsgtiAUw34TeSWiUwbKaXaI2RQg8SKVe80cipDBf0D" src="https://lib.baomitu.com/vue/2.6.7/vue.min.js"></script>
     <link crossorigin="anonymous" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" href="https://lib.baomitu.com/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <script crossorigin="anonymous" integrity="sha384-fYxN7HsDOBRo1wT/NSZ0LkoNlcXvpDpFy6WzB42LxuKAX7sBwgo7vuins+E1HCaw" src="https://lib.baomitu.com/moment.js/2.24.0/moment.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-U/+EF1mNzvy5eahP9DeB32duTkAmXrePwnRWtuSh1C/bHHhyR1KZCr/aGZBkctpY" src="https://lib.baomitu.com/axios/0.18.0/axios.min.js"></script>
     <style>
-        .score {
-            position: relative;
-            width: 100px;
-            height: 60px;
-            background-color: #92d050;
-            margin: 70px 40px 20px;
-            font-size: 25px;
-            color:#fff;
-            line-height: 60px;
-            text-align: center;
-        }
-        .score:after {
-            content: "";
-            position: absolute;
-            display: block;
-            top: -80px;
-            width: 0;
-            height: 0;
-            border: 50px solid transparent;
-            border-bottom: 30px solid #92d050;
-        }
-        .score:before {
-            content: "";
-            position: absolute;
-            display: block;
-            bottom: -80px;
-            width: 0;
-            height: 0;
-            border: 50px solid transparent;
-            border-top: 30px solid #92d050;
-        }
-        .preview{
-            padding: 40px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            position: relative;
-        }
-        .bgg{
-            background-color: #92d050;}
+    .score {
+        position: relative;
+        width: 100px;
+        height: 60px;
+        background-color: #92d050;
+        margin: 70px 40px 20px;
+        font-size: 32px;
+        color:#fff;
+        line-height: 60px;
+        text-align: center;
+    }
+    .score:after {
+        content: "";
+        position: absolute;
+        display: block;
+        top: -80px;
+        width: 0;
+        height: 0;
+        border: 50px solid transparent;
+        border-bottom: 30px solid #92d050;
+    }
+    .score:before {
+        content: "";
+        position: absolute;
+        display: block;
+        bottom: -80px;
+        width: 0;
+        height: 0;
+        border: 50px solid transparent;
+        border-top: 30px solid #92d050;
+    }
+    .preview{
+        padding: 40px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        position: relative;
+    }
+    .bgg{
+        background-color: #92d050;}
         .bgg .text-overflow{
             min-height: 170px;
         }
-    </style>
+        .acid{
+         margin-top: 40px;
+     }
+     [v-cloak]{
+        display: none;
+    }
+</style>
 </head>
 <body>
-<div class="container" id="app">
-    <div class="h4">AGN 生成器</div>
-    <div class="row">
-        <div class="form-group">
-            <label for="article">文章网址/Ac号</label>
-            <input type="text" id="article" class="form-control" @blur="getArticle" v-model="article" >
-        </div>
-        <div class="form-group">
-            <label for="title">标题</label>
-            <input type="text" id="title" class="form-control"  v-model="title" >
-        </div>
-        <div class="form-group">
-            <label for="author">作者</label>
-            <input type="text" id="author" class="form-control"  v-model="author" >
-        </div>
-        <div class="form-group">
-            <label for="comment">评论员</label>
-            <input type="text" id="comment" class="form-control"  v-model="comment" >
-        </div>
-        <div class="form-group">
-            <label for="content">内容</label>
-            <textarea id="content" class="form-control"  v-model="content" rows="7"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="summary">总评</label>
-            <input type="text" id="summary" class="form-control"  v-model="summary" >
-        </div>
-        <div class="form-group">
-            <label for="score">评分</label>
-            <input type="range" id="score" class="form-control"  v-model.number="score" max="10" min="0" step="0.1">
-        </div>
-        <div class="form-group">
-            <label for="content">预览</label>
-           <div class="preview row" >
-              <div class="col-md-6 col-xs-6 col-sm-6">
-                  <p class="text-overflow h4">标题：{{title}}</p>
-                  <p class="text-overflow h5">作者：{{author}}</p>
-                  <div class="score">
-                      {{score.toFixed(1)}}/10
+    <div class="container" id="app" v-cloak>
+        <div class="h4">AGN 生成器</div>
+        <div class="row">
+            <div class="form-group">
+                <label for="article">文章网址/Ac号</label>
+                <input type="text" id="article" class="form-control input-sm" @blur="getArticle" v-model="article" >
+            </div>
+            <div class="form-group">
+                <label for="title">标题</label>
+                <input type="text" id="title" class="form-control input-sm"  v-model="title" >
+            </div>
+            <div class="form-group">
+                <label for="author">作者</label>
+                <input type="text" id="author" class="form-control input-sm"  v-model="author" >
+            </div>
+            <div class="form-group">
+                <label for="comment">评论员</label>
+                <input type="text" id="comment" class="form-control input-sm"  v-model="comment" >
+            </div>
+            <div class="form-group">
+                <label for="content">内容</label>
+                <textarea id="content" class="form-control input-sm"  v-model="content" rows="7"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="summary">总评</label>
+                <input type="text" id="summary" class="form-control input-sm"  v-model="summary" >
+            </div>
+            <div class="form-group">
+                <label for="score">评分</label>
+                <input type="range" id="score" class="form-control input-sm"  v-model.number="score" max="10" min="0" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="content">预览</label>
+                <div class="preview row" >
+                  <div class="col-md-6 col-xs-6 col-sm-6">
+                      <p class="text-overflow h4">标题：{{title}}</p>
+                      <p class="text-overflow h5">作者：{{author}}</p>
+                      <a class="acid" :href="`http://www.acfun.cn/a/${acid}`" :title="title">{{acid}}</a>
+                      <div class="score">
+                          {{score.toFixed(1)}}
+                      </div>
                   </div>
-              </div>
-               <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:`rgba(78, 146, 7,${bgc})`}">
-                   <p class="h2">{{summary}}</p>
-                   <p class="text-overflow">{{content}}</p>
-                   <p>评论员：{{comment}}  {{moment().format('YYYY年MM月DD日')}}</p>
-               </div>
-           </div>
-        </div>
-    </div>
-</div>
-<style id="color"></style>
-<script>
+                  <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:`rgba(78, 146, 7,${bgc})`}">
+                     <p class="h2">{{summary}}</p>
+                     <p class="text-overflow" v-html="content.replace(/\n/g,'<br>')"></p>
+                     <p>评论员：{{comment}}  {{moment().format('YYYY年MM月DD日')}}</p>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+ <style id="color"></style>
+ <script>
     var app = new Vue({
         el:'#app',
         data(){
@@ -116,37 +130,40 @@
                 comment:localStorage.getItem('comment')||'yang',
                 article:'',
                 author:'',
+                acid:'',
                 bgc:""
             }
         },
         watch:{
             comment(nv){
               localStorage.setItem("comment",nv)
-            },
-            score(nv){
-                let val= nv/10
-                    val*=0.5
-                    val+=0.5
-                this.bgc = val
-                document.getElementById("color").innerText = `.score {background-color:rgba(78, 146, 7,${val});}.score:after {border-bottom-color:rgba(78, 146, 7,${val}) ;}` +
-                    `.score:before {border-top-color:rgba(78, 146, 7,${val}) ;}`
-            }
-        },
-        methods:{
-            getArticle(){
-                let aid = +this.article.replace('http://www.acfun.cn/a/ac','').replace("ac","").replace("\/","")
-                 if(aid){
-                     axios.get(`https://acfun.leanapp.cn/acfun/contents/${aid}`).then(res=>{
-                         if(res.data.code === 200){
-                             this.title = res.data.data.title
-                             this.author = res.data.data.owner.name
-                         }
-                     })
-                 }
-
-            }
+          },
+          score(nv){
+            let val= nv/10
+            val *= 0.6
+            val += 0.4
+            this.bgc = val
+            document.getElementById("color").innerText = `.score {background-color:rgba(78, 146, 7,${val});}.score:after {border-bottom-color:rgba(78, 146, 7,${val}) ;}` +
+            `.score:before {border-top-color:rgba(78, 146, 7,${val}) ;}`
         }
-    })
+    },
+    methods:{
+        getArticle(){
+            let aid = +this.article.replace('http://www.acfun.cn/a/ac','').replace("ac","").replace("\/","").trim() 
+            if(aid){
+               axios.get(`https://acfun.leanapp.cn/acfun/contents/${aid}`).then(res=>{
+                   if(res.data.code === 200){
+                       this.title = res.data.data.title
+                       this.author = res.data.data.owner.name
+                   }
+               })
+               this.acid = `ac${aid}`
+           }else{
+               this.acid = ''
+           }
+       }
+   }
+})
 </script>
 </body>
 </html>
