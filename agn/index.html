@@ -15,6 +15,9 @@
     <script crossorigin="anonymous" integrity="sha384-fYxN7HsDOBRo1wT/NSZ0LkoNlcXvpDpFy6WzB42LxuKAX7sBwgo7vuins+E1HCaw" src="https://lib.baomitu.com/moment.js/2.24.0/moment.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-U/+EF1mNzvy5eahP9DeB32duTkAmXrePwnRWtuSh1C/bHHhyR1KZCr/aGZBkctpY" src="https://lib.baomitu.com/axios/0.18.0/axios.min.js"></script>
     <style>
+    .container{
+        padding: 15px;
+    }
     .score {
         position: relative;
         width: 150px;
@@ -27,7 +30,7 @@
         text-align: center;
     }
     .preview{
-        padding: 40px;
+        padding: 20px;
         border: 1px solid #ccc;
         border-radius: 5px;
         position: relative;
@@ -38,7 +41,7 @@
             min-height: 170px;
         }
         .acid{
-         margin-top: 40px;
+         margin-top: 30px;
      }
      [v-cloak]{
         display: none;
@@ -48,7 +51,6 @@
 <body>
     <div class="container" id="app" v-cloak>
         <div class="h4">AGN 生成器</div>
-        <div class="row">
             <div class="form-group">
                 <label for="article">文章网址/Ac号</label>
                 <input type="text" id="article" class="form-control input-sm" @blur="getArticle" v-model="article" >
@@ -79,7 +81,7 @@
             </div>
             <div class="form-group">
                 <label for="content">预览</label>
-                <div class="preview row" >
+                <div class="preview" >
                   <div class="col-md-6 col-xs-6 col-sm-6">
                       <p class="text-overflow h4">标题：{{title}}</p>
                       <p class="text-overflow h5">作者：{{author}}</p>
@@ -93,9 +95,9 @@
                      <p class="text-overflow" v-html="content.replace(/\n/g,'<br>')"></p>
                      <p>评论员：{{comment}}  {{moment().format('YYYY年MM月DD日')}}</p>
                  </div>
+                 <div class="clearfix"></div>
              </div>
          </div>
-     </div>
  </div>
  <script>
     var app = new Vue({
