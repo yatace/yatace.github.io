@@ -16,94 +16,117 @@
     <script crossorigin="anonymous" integrity="sha384-U/+EF1mNzvy5eahP9DeB32duTkAmXrePwnRWtuSh1C/bHHhyR1KZCr/aGZBkctpY" src="https://lib.baomitu.com/axios/0.18.0/axios.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-S2QR8FFC2taQMwIsBKVmvYCBnA1MewmutcASWe7y9srSL5A6PXmZPJ7iq1Np/GqS" src="https://lib.baomitu.com/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <style>
-    .container{
-        padding: 15px;
-    }
-    .score {
-        position: relative;
-        width: 150px;
-        height: 150px;
-        margin: 20px 0;
-        background:url('./score.png') top center/cover;
-        font-size: 32px;
-        color:#fff;
-        line-height: 150px;
-        text-align: center;
-    }
-    .preview{
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        position: relative;
-        background: #fff;
-    }
-    .bgg{
-        background-color: #92d050;}
-    .bgg .text-overflow{
-        min-height: 170px;
-    }
-    .acid{
-       margin-top: 30px;
-   }
-   [v-cloak]{
-        display: none;
-    }
-</style>
+        .container{
+            padding: 15px;
+        }
+        .score {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: url(./score3.png) top center/cover;
+            font-size: 38px;
+            color: #fff;
+            line-height: 150px;
+            text-align: center;
+            right: -77px;
+            z-index: 20;
+            top: 100px;
+        }
+        .preview{
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+        .bgg{
+            background-color: #92d050;
+            color: #fff!important;
+            opacity: .85;
+            position: relative;
+        }
+        .bgg .text-overflow{
+            min-height: 170px;
+            padding: 10px 0 0 65px ;
+        }
+        .acid{
+            position: absolute;
+            right: 10px;
+            top: -20px;
+            text-align: right;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container" id="app" v-cloak>
-        <div class="h4">AGN 生成器</div>
-        <div class="form-group">
-            <label for="article">文章网址/Ac号</label>
-            <input type="text" id="article" class="form-control input-sm" @blur="getArticle" v-model="article" >
-        </div>
-        <div class="form-group">
-            <label for="title">标题</label>
-            <input type="text" id="title" class="form-control input-sm"  v-model="title" >
-        </div>
-        <div class="form-group">
-            <label for="author">作者</label>
-            <input type="text" id="author" class="form-control input-sm"  v-model="author" >
-        </div>
-        <div class="form-group">
-            <label for="comment">评论员</label>
-            <input type="text" id="comment" class="form-control input-sm"  v-model="comment" >
-        </div>
-        <div class="form-group">
-            <label for="content">内容</label>
-            <textarea id="content" class="form-control input-sm"  v-model="content" rows="7"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="summary">总评</label>
-            <input type="text" id="summary" class="form-control input-sm"  v-model="summary" >
-        </div>
-        <div class="form-group">
-            <label for="score">评分</label>
-            <input type="range" id="score" class="form-control input-sm"  v-model.number="score" max="10" min="0" step="0.1">
-        </div>
-        <div class="form-group">
-            <label for="content">预览<button class="btn btn-sm btn-success" v-if="acid" @click="captureImage">下载</button></label>
+<div class="container" id="app" v-cloak>
+    <div class="h4">AGN 生成器</div>
+    <div class="form-group">
+        <label for="article">文章网址/Ac号</label>
+        <input type="text" id="article" class="form-control input-sm" @blur="getArticle" v-model="article" >
+    </div>
+    <div class="form-group">
+        <label for="title">标题</label>
+        <input type="text" id="title" class="form-control input-sm"  v-model="title" >
+    </div>
+    <div class="form-group">
+        <label for="author">作者</label>
+        <input type="text" id="author" class="form-control input-sm"  v-model="author" >
+    </div>
+    <div class="form-group">
+        <label for="comment">评论员</label>
+        <input type="text" id="comment" class="form-control input-sm"  v-model="comment" >
+    </div>
+    <div class="form-group">
+        <label for="content">内容</label>
+        <textarea id="content" class="form-control input-sm"  v-model="content" rows="7"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="summary">总评</label>
+        <input type="text" id="summary" class="form-control input-sm"  v-model="summary" >
+    </div>
+    <div class="form-group">
+        <label for="score">评分</label>
+        <input type="range" id="score" class="form-control input-sm"  v-model.number="score" max="10" min="0" step="0.1">
+    </div>
+    <div id="container">
+
+    </div>
+    <div class="form-group">
+        <label for="content">预览<button class="btn btn-sm btn-success" v-if="acid" @click="captureImage">下载</button></label>
+        <div style="position: relative;overflow: hidden">
+            <iframe v-show="acid" :src="`http://www.acfun.cn/a/${acid}`" width="100%" height="335" style="transform: translateY(-50px)" frameborder="0"></iframe>
             <div class="preview" >
-              <div class="col-md-6 col-xs-6 col-sm-6">
-                  <p class="text-overflow h4">标题：{{title}}</p>
-                  <p class="text-overflow h5">作者：{{author}}</p>
-                  <a class="acid" :href="`http://www.acfun.cn/a/${acid}`" :title="title">{{acid}}</a>
-                  <div class="score" :style="{'background-color':`rgba(78, 146, 7,${bgc})`}">
-                      {{score.toFixed(1)}}
-                  </div>
-              </div>
-              <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:`rgba(78, 146, 7,${bgc})`}">
-               <p class="h2">{{summary}}</p>
-               <p class="text-overflow" v-html="content.replace(/\n/g,'<br>')"></p>
-               <p>评论员：{{comment}}  {{moment().format('YYYY年MM月DD日')}}</p>
-           </div>
-           <div class="clearfix"></div>
-       </div>
-            
-   </div>
+                <div class="col-md-6 col-xs-6 col-sm-6" style="position: relative">
+
+                    <div class="score">
+                        {{score.toFixed(1)}}
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:`rgba(78, 146, 7,${bgc})`}">
+                    <p class="h1" >{{summary}} </p>
+                    <div class="acid" >
+                        <p class="h2">AGN·CN</p>
+                        {{acid}}
+
+                    </div>
+                    <p class="text-overflow" v-html="content.replace(/\n/g,'<br>')"></p>
+                    <p>评论员：{{comment}}  {{moment().format('YYYY年MM月DD日')}}</p>
+                </div>
+                <div class="clearfix"></div>
+
+            </div>
+        </div>
+
+
+    </div>
+
 </div>
 <script>
-
     var app = new Vue({
         el:'#app',
         data(){
@@ -121,16 +144,22 @@
         },
         watch:{
             comment(nv){
-              localStorage.setItem("comment",nv)
-          },
-          score(nv){
-            let val= nv/10
-            val *= 0.6
-            val += 0.4
-            this.bgc = val
-        }
-    },
-    methods:{
+                localStorage.setItem("comment",nv)
+            },
+            score(nv){
+                let val= nv/10
+                val *= 0.6
+                val += 0.4
+                this.bgc = val
+                this.drawScoreBox()
+            }
+        },
+        methods:{
+            drawScoreBox(){
+                // create shape
+                console.log('drwa')
+
+            },
             captureImage(){
                 html2canvas(document.querySelector('.preview')).then(canvas =>{
                     localStorage.setItem( "savedImageData", canvas.toDataURL("image/png") );
@@ -141,22 +170,22 @@
                     link.click();
                 })
             },
-        getArticle(){
-            let aid = +this.article.replace('http://www.acfun.cn/a/ac','').replace("ac","").replace("\/","").trim() 
-            if(aid){
-             axios.get(`https://acfun.leanapp.cn/acfun/contents/${aid}`).then(res=>{
-                 if(res.data.code === 200){
-                     this.title = res.data.data.title
-                     this.author = res.data.data.owner.name
-                 }
-             })
-             this.acid = `ac${aid}`
-         }else{
-             this.acid = ''
-         }
-     }
- }
-})
+            getArticle(){
+                let aid = +this.article.replace('http://www.acfun.cn/a/ac','').replace("ac","").replace("\/","").trim()
+                if(aid){
+                    axios.get(`https://acfun.leanapp.cn/acfun/contents/${aid}`).then(res=>{
+                        if(res.data.code === 200){
+                            this.title = res.data.data.title
+                            this.author = res.data.data.owner.name
+                        }
+                    })
+                    this.acid = `ac${aid}`
+                }else{
+                    this.acid = ''
+                }
+            }
+        }
+    })
 </script>
 </body>
 </html>
