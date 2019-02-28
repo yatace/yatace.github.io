@@ -15,6 +15,7 @@
     <script crossorigin="anonymous" integrity="sha384-fYxN7HsDOBRo1wT/NSZ0LkoNlcXvpDpFy6WzB42LxuKAX7sBwgo7vuins+E1HCaw" src="https://lib.baomitu.com/moment.js/2.24.0/moment.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-U/+EF1mNzvy5eahP9DeB32duTkAmXrePwnRWtuSh1C/bHHhyR1KZCr/aGZBkctpY" src="https://lib.baomitu.com/axios/0.18.0/axios.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-S2QR8FFC2taQMwIsBKVmvYCBnA1MewmutcASWe7y9srSL5A6PXmZPJ7iq1Np/GqS" src="https://lib.baomitu.com/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <script crossorigin="anonymous" integrity="sha384-8CYhPwYlLELodlcQV713V9ZikA3DlCVaXFDpjHfP8Z36gpddf/Vrt47XmKDsCttu" src="https://lib.baomitu.com/clipboard.js/2.0.4/clipboard.min.js"></script>
     <style>
         .container{
             padding: 15px;
@@ -56,8 +57,7 @@
             text-align: right;
         }
         .title{
-            transform: translate(-22px,0);
-            margin: 0;
+            margin-left: -20px;
         }
         .author{
             width: 220px;
@@ -108,7 +108,13 @@
 
     </div>
     <div class="form-group">
-        <label for="content">预览<button class="btn btn-sm btn-success" v-if="acid" @click="captureImage">下载</button></label>
+        <label for="content">预览
+            <button class="btn btn-sm btn-success" v-if="acid" @click="captureImage">下载</button>
+            <button class="btn btn-sm btn-success" v-if="acid" @click="uploadAndCopy">上传图片</button>
+            {{uploadUrl}}
+            <button class="btn btn-sm btn-success clipboard" :data-clipboard-text="uploadUrl" >复制链接</button>
+
+        </label>
         <div style="position: relative;overflow: hidden">
             <div class="preview" >
                 <div class="col-md-6 col-xs-6 col-sm-6" style="position: relative">
@@ -151,8 +157,16 @@
                 article:'',
                 author:'',
                 acid:'',
+                uploadUrl:'',
                 bgc:"1"
             }
+        },
+        created(){
+            var clipboard = new ClipboardJS('.clipboard');
+            clipboard.on('success', function(e) {
+                alert('复制成功')
+                e.clearSelection();
+            });
         },
         watch:{
             comment(nv){
@@ -168,12 +182,22 @@
         methods:{
             captureImage(){
                 html2canvas(document.querySelector('.preview')).then(canvas =>{
-                    localStorage.setItem( "savedImageData", canvas.toDataURL("image/png") );
                     let base64Img = canvas.toDataURL("image/png");
                     let link = document.createElement('a');
                     link.href = base64Img;
                     link.download = `${this.acid}.png`;
                     link.click();
+                })
+            },
+            uploadAndCopy(){
+                html2canvas(document.querySelector('.preview')).then(canvas =>{
+                    canvas.toBlob(blob=> {
+                        const data = new FormData()
+                        data.append('smfile',blob)
+                       axios.post('https://sm.ms/api/upload',data).then(res=>{
+                           this.uploadUrl = res.data.data.url
+                       })
+                    },'image/png');
                 })
             },
             getArticle(){
