@@ -16,6 +16,7 @@
     <script crossorigin="anonymous" integrity="sha384-U/+EF1mNzvy5eahP9DeB32duTkAmXrePwnRWtuSh1C/bHHhyR1KZCr/aGZBkctpY" src="https://lib.baomitu.com/axios/0.18.0/axios.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-S2QR8FFC2taQMwIsBKVmvYCBnA1MewmutcASWe7y9srSL5A6PXmZPJ7iq1Np/GqS" src="https://lib.baomitu.com/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-8CYhPwYlLELodlcQV713V9ZikA3DlCVaXFDpjHfP8Z36gpddf/Vrt47XmKDsCttu" src="https://lib.baomitu.com/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script crossorigin="anonymous" integrity="sha384-c9m22wgYuGmVnDbqtDiQ7GJ8H4LzJBB4sUBGVPWyVc6gmku4Z5FwBjphfR6245v6" src="https://lib.baomitu.com/konva/3.1.0/konva.min.js"></script>
     <style>
         .container{
             padding: 15px;
@@ -24,14 +25,16 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            background: url(./score3.png) top center/cover;
-            font-size: 38px;
-            color: #fff;
-            line-height: 150px;
-            text-align: center;
             right: -77px;
             z-index: 20;
             top: 100px;
+        }
+        .scoretxt{
+             font-size: 38px;
+            color: #fff;
+            line-height: 150px;
+            text-align: center;
+             position: relative;
         }
         .preview{
             padding: 20px;
@@ -41,7 +44,7 @@
             background: url(./bg.png) top left/cover no-repeat;
         }
         .bgg{
-            background-color: #92d050;
+            background-color: #294e01;
             color: #fff!important;
             opacity: .85;
             position: relative;
@@ -67,6 +70,13 @@
             margin-left: -20px;
             text-indent: 127px;
             line-height: 54px;
+        }
+        .hexgon{
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            left: 0;
+            top: 0;
         }
         [v-cloak]{
             display: none;
@@ -104,10 +114,7 @@
         <label for="score">评分</label>
         <input type="range" id="score" class="form-control input-sm"  v-model.number="score" max="10" min="0" step="0.1">
     </div>
-    <div id="container">
-
-    </div>
-    <div class="form-group">
+     <div class="form-group">
         <label for="content">预览
             <button class="btn btn-sm btn-success" v-if="acid" @click="captureImage">下载</button>
             <button class="btn btn-sm btn-success" v-if="acid" @click="uploadAndCopy">上传图片</button>
@@ -121,11 +128,17 @@
                     <p class="text-overflow h4 title">{{title}}</p>
                     <div class="text-overflow author">{{author}}</div>
                     <div class="score">
-                        {{score.toFixed(1)}}
+                          <div id="canvas" class="hexgon">
+        
+                         </div>
+                         <div class="scoretxt">
+                               {{score.toFixed(1)}}
+                         </div>
+                      
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:`rgba(78, 146, 7,${bgc})`}">
+                <div class="col-md-6 col-xs-6 col-sm-6 bgg" :style="{background:bgc}">
                     <p class="h1" >{{summary}} </p>
                     <div class="acid" >
                         <p class="h2">AGN·中国</p>
@@ -142,8 +155,10 @@
 
 
     </div>
+  
 
 </div>
+
 <script>
     var app = new Vue({
         el:'#app',
@@ -158,6 +173,9 @@
                 author:'',
                 acid:'',
                 uploadUrl:'',
+                layer:'',
+                hexgon:'',
+                colors:[],
                 bgc:"1"
             }
         },
@@ -167,19 +185,87 @@
                 alert('复制成功')
                 e.clearSelection();
             });
+            this. getRgb();
+            this.$nextTick(()=>{
+                  var stage = new Konva.Stage({
+              container: 'canvas',   // id of container <div> 
+              width: 150,
+              height: 150
+            });
+
+            // then create layer 
+            this.layer = new Konva.Layer();
+
+            // create our shape 
+            this.hexgon = new Konva.RegularPolygon({
+              x: 75,
+              y: 75,
+              radius: 60,
+              sides: 6,
+              fill: '#294e01',
+              stroke: 'white',
+                shadowColor: 'grey',
+                shadowBlur: 10,
+                shadowOffset: {
+                    x : 0,
+                    y : 0
+                },
+            shadowOpacity: 0.6,
+            strokeWidth: 7
+            });
+
+            // add the shape to the layer 
+            this.layer.add(this.hexgon);
+
+            // add the layer to the stage 
+            stage.add(this.layer);
+            })
         },
         watch:{
             comment(nv){
                 localStorage.setItem("comment",nv)
             },
             score(nv){
-                let val= nv/10
-                val *= 0.6
-                val += 0.4
-                this.bgc = val
+                this.hexgon.attrs.fill = this.colors[nv*10]
+                this.layer.draw()
+                console.log(this.colors[nv*10],nv*10)
+                this.bgc = this.colors[nv*10]
             }
         },
         methods:{
+            getRgb(){
+                let end = {r:41,g:78,b:1}
+                let start = {r:185,g:229,b:137}
+                this.colors.push(this.getHex(start));
+                let step = {
+                    r:parseInt((end.r - start.r)/99),g:parseInt((end.g - start.g)/99),b:parseInt((end.b - start.b)/99)
+                }
+                for(var i =1;i<100;i++){
+                    let r = start.r + step.r*i
+                    let g = start.g + step.g*i
+                    let b = start.b + step.b*i
+                    this.colors.push(this.getHex(
+                    {
+                        r,
+                        g,
+                        b
+                    }))
+                }
+                   this.colors.push(this.getHex(end));
+            },
+            getHex(rgb){
+                let hexstr = '#'
+                for(let key in rgb){
+                    let hexval = rgb[key].toString(16)
+                    if(hexval.length === 1){
+                        hexstr += '0'+ hexval
+                    }else{
+                         hexstr += hexval
+                    }
+                }
+                return hexstr
+
+            },
             captureImage(){
                 html2canvas(document.querySelector('.preview')).then(canvas =>{
                     let base64Img = canvas.toDataURL("image/png");
